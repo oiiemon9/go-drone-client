@@ -1,10 +1,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import useAuth from '../../Hooks/useAuth';
+import { updateProfile } from 'firebase/auth';
+import axios from 'axios';
 
 const Register = () => {
   const { registration, setLoginUser } = useAuth();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -12,10 +15,31 @@ const Register = () => {
   } = useForm();
 
   const handelRegister = async (data) => {
-    const { email, password } = data;
+    const { email, password, photo, name } = data;
+
     try {
       const result = await registration(email, password);
-      setLoginUser(result.user);
+      if (result.user) {
+        const fromData = new FormData();
+        fromData.append('image', photo[0]);
+
+        let photoURL = '';
+
+        await axios
+          .post(
+            `https://api.imgbb.com/1/upload?key=${
+              import.meta.env.VITE_imgbb_key
+            }`,
+            fromData
+          )
+          .then((res) => (photoURL = res.data.data.display_url));
+
+        await updateProfile(result.user, { displayName: name, photoURL }).catch(
+          (error) => console.log(error)
+        );
+        setLoginUser(result.user);
+        navigate('/');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -37,7 +61,18 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Name"
+                {...register('name')}
                 className="input input-bordered focus:outline-none bg-white"
+              />
+            </div>
+            <div className="form-control mt-6">
+              <label className="label">
+                <span className="label-text font-medium">Name</span>
+              </label>
+              <input
+                type="file"
+                {...register('photo')}
+                className="file-input file:bg-base-100 bg-white"
               />
             </div>
 

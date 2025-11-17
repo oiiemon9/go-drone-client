@@ -4,7 +4,17 @@ import { Link } from 'react-router';
 import useAuth from '../../Hooks/useAuth';
 
 const NavBar = () => {
-  const { loginUser, logOut } = useAuth();
+  const { loginUser, setLoginUser, logOut } = useAuth();
+
+  const handelLogout = async () => {
+    await logOut()
+      .then(() => {
+        setLoginUser(null);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const navLinks = (
     <>
