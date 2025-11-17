@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 const Coverage = () => {
   return (
     <div className="max-w-[1440px] mx-auto px-2 mt-5">
-      <div className="bg-white rounded-2xl p-24">
+      <div className="bg-white rounded-2xl p-12 md:p-24">
         <h1 className="text-4xl text-secondary font-bold">
           We are available in 64 districts
         </h1>
