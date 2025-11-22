@@ -15,7 +15,7 @@ const googleProvider = new GoogleAuthProvider();
 
 const FirebaseContext = ({ children }) => {
   const [loginUser, setLoginUser] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(true);
 
   const registration = (email, password) => {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -38,6 +38,7 @@ const FirebaseContext = ({ children }) => {
       if (user) {
         setLoginUser(user);
       }
+      setLoader(false);
     });
     return () => {
       unsubscribe;
